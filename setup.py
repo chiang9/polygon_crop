@@ -3,11 +3,10 @@ from setuptools import setup
 
 required = [
     'numpy',
-    'PIL',
+    'Pillow',
     'matplotlib',
     'sklearn',
-    'cv2',
-    'tkinter'
+    'opencv-python'
 ]
 
 with open("README.md", "r") as fh:

@@ -6,22 +6,37 @@ import sys
 import cv2
 
 
-def img_crop(path, basewidth = 500):
-    pp = polygon_select(path)
-    newIm = polygon_crop(path, pp)
+def img_crop(path, winWidth = 500):
+    """
+    img_crop crop image based on the user defined polygon area
+
+    Parameters
+    ----------
+    path : str
+        path of the image
+    winWidth : int, optional
+        window size of the open image, by default 500
+
+    Returns
+    -------
+    numpy arr
+        cropped image
+    """
+    pp = _polygon_select(path, winWidth)
+    newIm = _polygon_crop(path, pp)
     return newIm
 
 
-def polygon_select(path, basewidth = 500):
+def _polygon_select(path, basewidth = 500):
     cs = list()
     img = cv2.imread(path)
     length, wid, _ = img.shape
 
     wid_ratio = basewidth/wid
     baselength = int(round(length * wid_ratio))
-    # img = img.resize((basewidth, baselength), Image.ANTIALIAS)
     img = cv2.resize(img, dsize=(basewidth, baselength), interpolation=cv2.INTER_CUBIC)
 
+    print("Press ESC to exit the edit mode")
     # mouse callback function
     def draw_circle(event,x,y,flags,param):
 
@@ -43,7 +58,7 @@ def polygon_select(path, basewidth = 500):
     cv2.destroyAllWindows()
     return cs
 
-def polygon_crop(path, polygon):
+def _polygon_crop(path, polygon):
     img = Image.open(path).convert("RGB")
     img_array = np.asarray(img)
 
@@ -58,6 +73,4 @@ def polygon_crop(path, polygon):
     new_img_array[:,:,1] = new_img_array[:,:,1] * mask
     new_img_array[:,:,2] = new_img_array[:,:,2] * mask
 
-    # back to Image from numpy
-    # newIm = Image.fromarray(new_img_array, "RGB")
     return new_img_array
